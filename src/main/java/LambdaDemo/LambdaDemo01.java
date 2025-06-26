@@ -1,3 +1,5 @@
+package LambdaDemo;
+
 import java.util.function.Function;
 import java.util.function.IntBinaryOperator;
 import java.util.function.IntConsumer;
