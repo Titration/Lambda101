@@ -1,6 +1,8 @@
 package StreamDemo;
 
 import java.util.*;
+import java.util.function.BinaryOperator;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -49,7 +51,48 @@ public class StreamDemo {
         test24(); // reduce(T identity, BinaryOperator<T> accumulator) 两个参数
         test25(); // reduce(T identity, BinaryOperator<T> accumulator) 两个参数
         test26(); // reduce(BinaryOperator<T> accumulator) 一个参数
+
+        // 高级用法 mapToInt
+        test27();
+
+        // 并行流
+        test28();
     }
+
+    private static void test28() {
+        Stream<Integer> stream = Stream.of(1,2,3,4,5,6,7,8,9,10);
+        // 也可以直接用 .parallelStream()
+        Integer sum = stream
+                .parallel()
+                .peek(new Consumer<Integer>() {
+                    @Override
+                    public void accept(Integer integer) {
+                        System.out.println(integer + Thread.currentThread().getName());
+                    }
+                })
+                .filter(num -> num > 5)
+                .reduce((result, element) -> result + element)
+                .get();
+        System.out.println(sum);
+    }
+
+    private static void test27() {
+        List<Author> authors = getAuthors();
+        authors.stream()
+                .mapToInt(author -> author.getAge())
+                .map(age -> age + 10)
+                .filter(age -> age > 60)
+                .map(age -> age + 2)
+                .forEach(System.out::println);
+//        authors.stream()
+//                .map(author -> author.getAge())
+//                .map(age -> age + 10)
+//                .filter(age -> age > 60)
+//                .map(age -> age + 2)
+//                .forEach(System.out::println);
+
+    }
+
     private static void test26() {
         // 使用reduce求所有作者年龄的最小值
         List<Author> authors = getAuthors();
